@@ -5,8 +5,10 @@ from tqdm import tqdm
 import logging
 
 class Rates(Transformer):
-    def __init__(self, data, fixingsData):
+    def __init__(self, data, fixingsData, interval_size=5000, timediff='1hour'):
         super().__init__(data, fixingsData)
+        self.interval_size = interval_size
+        self.timediff = timediff
         self.data['timestamp'] = pd.to_datetime(self.data['timestamp'])
         self.fixings['timestamp'] = pd.to_datetime(self.fixings['timestamp'])
         self.data = self.data.sort_values(by='timestamp')
@@ -16,19 +18,19 @@ class Rates(Transformer):
         self.vectorize()
         return self.data
 
-    def calc_diff(self, chunk, timediff='1hour'):
-        df = pd.merge_asof(chunk, self.fixings, on=['timestamp'], by=['ccy_pair'], tolerance=pd.Timedelta(timediff), direction='backward')
+    def calc_diff(self, chunk):
+        df = pd.merge_asof(chunk, self.fixings, on=['timestamp'], by=['ccy_pair'], tolerance=pd.Timedelta(self.timediff), direction='backward')
         df['new_price'] = np.where(df['convert_price'], (df['price'] / df['conversion_factor']) + df['spot_mid_rate'], df['price'])
         return df
 
 
-    def vectorize(self, batch_size=5000):
+    def vectorize(self):
         processed_chunks = []
         n = len(self.data)
-        logging.debug(f"Running with batch sisze {batch_size}")
+        logging.debug(f"Running with batch size {self.interval_size}")
 
-        for start in tqdm(range(0, n, batch_size)):
-            end = start + batch_size
+        for start in tqdm(range(0, n, self.interval_size)):
+            end = start + self.interval_size
             chunk = self.data.iloc[start:end].copy()
 
             processed_chunk = self.calc_diff(chunk)
