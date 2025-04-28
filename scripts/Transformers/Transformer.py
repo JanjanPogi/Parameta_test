@@ -8,8 +8,8 @@ class Transformer:
         self.path = Path(os.getcwd())
         self.data = marketdata
         try:
-            if not (fixingsdata.fixing.fixings.empty):
-                self.fixings = fixingsdata.fixing.fixings
+            if not (fixingsdata.fixings.empty):
+                self.fixings = fixingsdata.fixings
         except (AttributeError, ValueError):
             self.fixings = pd.DataFrame()
 
