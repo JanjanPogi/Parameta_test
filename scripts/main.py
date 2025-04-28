@@ -21,8 +21,8 @@ def main(jobs):
         data = transformer.run()
 
         if job['Name'] == 'FX_New':
-            job['Uploader'](data[(data['new_price'].isnull())]).upload_csv(Path(os.getcwd()) / 'rates_test' / 'results' / 'fulldata.csv' )
-            job['Uploader'](data[~(data['new_price'].isnull())]).upload_csv(Path(os.getcwd()) / 'rates_test' / 'results' / 'missing_rates.csv' )
+            job['Uploader'](data[~(data['new_price'].isnull())]).upload_csv(Path(os.getcwd()) / 'rates_test' / 'results' / 'fulldata.csv' )
+            job['Uploader'](data[(data['new_price'].isnull())]).upload_csv(Path(os.getcwd()) / 'rates_test' / 'results' / 'missing_rates.csv' )
 
         end_time = time.time()
         logging.debug(f'Succesfully ran the job {job['Name']} {end_time}')

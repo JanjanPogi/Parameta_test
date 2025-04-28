@@ -1,6 +1,8 @@
 from Transformers.Transformer import Transformer
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
+import logging
 
 class Rates(Transformer):
     def __init__(self, data, fixingsData):
@@ -23,8 +25,9 @@ class Rates(Transformer):
     def vectorize(self, batch_size=5000):
         processed_chunks = []
         n = len(self.data)
+        logging.debug(f"Running with batch sisze {batch_size}")
 
-        for start in range(0, n, batch_size):
+        for start in tqdm(range(0, n, batch_size)):
             end = start + batch_size
             chunk = self.data.iloc[start:end].copy()
 
