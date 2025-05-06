@@ -21,6 +21,9 @@ def main(jobs):
             transformer = job['Transformer'](extractor.data, **job.get('Params', {}))
         data = transformer.run()
 
+        if not os.path.exists(job['Path']):
+            os.makedirs(job['Path'])
+
         if job['Name'] == 'FX_New':
             job['Uploader'](data[~(data['new_price'].isnull())]).upload_csv(job['Path'] / 'fulldata.csv' )
             job['Uploader'](data[(data['new_price'].isnull())]).upload_csv(job['Path'] / 'missing_rates.csv' )
