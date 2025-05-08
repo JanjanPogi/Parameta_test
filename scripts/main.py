@@ -59,7 +59,7 @@ if __name__ == '__main__':
             'Path': Path(os.getcwd()) / 'stdev_test' / 'results',
             'Params': {
                 'start_date': "2021-11-20 00:00:00",
-                'days_forward': 3,
+                'hours_forward': 81,
                 'window_size': 20,
             }
         }
